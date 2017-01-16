@@ -1,0 +1,16 @@
+PODS:
+  - BestRouter (0.1.0)
+
+DEPENDENCIES:
+  - BestRouter (from `../`)
+
+EXTERNAL SOURCES:
+  BestRouter:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  BestRouter: a298ab2eeba373645d04a43f5a0ae6b0c819c77f
+
+PODFILE CHECKSUM: 07b6b6723505901ac07395e068f8d84db2bfe8f0
+
+COCOAPODS: 1.1.1
