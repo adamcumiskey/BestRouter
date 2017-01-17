@@ -14,7 +14,7 @@ import BestRouter
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // anchor for the router hierarchy
-    var router: Any!
+    var router: WindowRouter!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -39,20 +39,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let nav3 = NavigationRouter(root: vcRouter3)
         
         let tab = TabBarRouter(items: [nav1, nav2])
-        let split = SplitViewRouter(master: nav3, detail: tab)
         
         let window = UIWindow(frame: UIScreen.main.bounds)
+        let router: WindowRouter
         if UIDevice.current.userInterfaceIdiom == .pad {
-            // iPad
-            let router = WindowRouter(root: split, window: window)
-            router.launch()
-            self.router = router
+            let split = SplitViewRouter(master: nav3, detail: tab)
+            router = WindowRouter(root: split, window: window)
         } else {
-            // iPhone
-            let router = WindowRouter(root: tab, window: window)
-            router.launch()
-            self.router = router
+            router = WindowRouter(root: tab, window: window)
         }
+        router.launch()
+        self.router = router
         return true
     }
 

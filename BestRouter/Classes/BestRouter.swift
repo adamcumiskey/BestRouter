@@ -30,27 +30,6 @@ public class Router<ViewController: UIViewController>: RouterType {
 }
 
 
-/// Base of the Router heirarchy in a window
-/// You should create and retain this in your App Delegate when `applicationDidFinishLaunching` is called
-public final class WindowRouter<Router: RouterType>: RouterType {
-    public var root: Router
-    public var viewController: UIViewController { return root.viewController }
-    
-    private var window: UIWindow
-    
-    public init(root: Router, window: UIWindow) {
-        root.viewController.view.frame = window.bounds
-        self.root = root
-        self.window = window
-    }
-    
-    public func launch() {
-        window.rootViewController = root.viewController
-        window.makeKeyAndVisible()
-    }
-}
-
-
 /// Router wrapping UINavigationController
 public class NavigationRouter<Root: RouterType>: Router<UINavigationController>, ParentRouterType {
     public var root: Root
@@ -107,5 +86,56 @@ public class SplitViewRouter<Master: RouterType, Detail: RouterType>: Router<UIS
         splitViewController.delegate = delegate
         
         super.init(viewController: splitViewController)
+    }
+}
+
+
+/// Base of the Router heirarchy in a window
+/// You should create and retain this in your App Delegate when `applicationDidFinishLaunching` is called
+public final class WindowRouter: RouterType {
+    public var viewController: UIViewController { return root.viewController }
+    public var root: RouterType {
+        didSet {
+            window.setRootViewController(root.viewController)
+        }
+    }
+    
+    private var window: UIWindow
+    
+    public init(root: RouterType, window: UIWindow) {
+        root.viewController.view.frame = window.bounds
+        self.root = root
+        self.window = window
+    }
+    
+    public func launch() {
+        window.rootViewController = root.viewController
+        window.makeKeyAndVisible()
+    }
+}
+
+extension UIWindow {
+    func setRootViewController(_ viewController: UIViewController, animated: Bool = true, completion: ((Void) -> Void)? = nil) {
+        viewController.view.frame = frame
+        if animated == true {
+            UIView.transition(
+                with: self,
+                duration: 0.23,
+                options: [.allowAnimatedContent, .transitionCrossDissolve],
+                animations: {
+                    self.rootViewController = viewController
+            },
+                completion: { done in
+                    if let completion = completion {
+                        completion()
+                    }
+            }
+            )
+        } else {
+            rootViewController = viewController
+            if let completion = completion {
+                completion()
+            }
+        }
     }
 }
