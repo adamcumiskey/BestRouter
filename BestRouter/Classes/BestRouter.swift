@@ -13,6 +13,11 @@ public protocol RouterType: class {
     var viewController: UIViewController { get }
 }
 
+public protocol ParentRouterType: RouterType {
+    func attatch(router: RouterType, animated: Bool)
+    func detatch(router: RouterType, animated: Bool)
+}
+
 
 /// Generic Router base class
 public class Router<ViewController: UIViewController>: RouterType {
@@ -47,7 +52,7 @@ public final class WindowRouter<Router: RouterType>: RouterType {
 
 
 /// Router wrapping UINavigationController
-public class NavigationRouter<Root: RouterType>: Router<UINavigationController> {
+public class NavigationRouter<Root: RouterType>: Router<UINavigationController>, ParentRouterType {
     public var root: Root
     private var delegate: UINavigationControllerDelegate?
     
@@ -59,11 +64,11 @@ public class NavigationRouter<Root: RouterType>: Router<UINavigationController> 
         super.init(viewController: navigationController)
     }
     
-    func pushRouter(router: RouterType, animated: Bool = true) {
+    public func attatch(router: RouterType, animated: Bool = true) {
         self._viewController.pushViewController(router.viewController, animated: animated)
     }
     
-    func popRouter(animated: Bool = true) {
+    public func detatch(router: RouterType, animated: Bool = true) {
         self._viewController.popViewController(animated: animated)
     }
 }
