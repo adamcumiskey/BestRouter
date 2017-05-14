@@ -11,6 +11,7 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
+		667BB5131EC8FA2400F2B4AD /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667BB5121EC8FA2400F2B4AD /* MenuViewController.swift */; };
 		6E6DADFCE89C8F3DC25975F3 /* Pods_BestRouter_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A5A34DC7FA7B6B60B82392A /* Pods_BestRouter_Example.framework */; };
 		C8D18AEDA5BFE723485F1DC5 /* Pods_BestRouter_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60D309134F2370AE1BD7E049 /* Pods_BestRouter_Tests.framework */; };
 /* End PBXBuildFile section */
@@ -40,6 +41,7 @@
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		60D309134F2370AE1BD7E049 /* Pods_BestRouter_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BestRouter_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		667BB5121EC8FA2400F2B4AD /* MenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
 		8E5418404597B09AF312071D /* Pods-BestRouter_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BestRouter_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-BestRouter_Example/Pods-BestRouter_Example.release.xcconfig"; sourceTree = "<group>"; };
 		9A5A34DC7FA7B6B60B82392A /* Pods_BestRouter_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BestRouter_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E07FDF093915BAB2D18048F0 /* Pods-BestRouter_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BestRouter_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BestRouter_Tests/Pods-BestRouter_Tests.release.xcconfig"; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
+				667BB5121EC8FA2400F2B4AD /* MenuViewController.swift */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
@@ -355,6 +358,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
+				667BB5131EC8FA2400F2B4AD /* MenuViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

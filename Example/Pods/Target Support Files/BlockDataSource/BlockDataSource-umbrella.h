@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double BestRouterVersionNumber;
-FOUNDATION_EXPORT const unsigned char BestRouterVersionString[];
+FOUNDATION_EXPORT double BlockDataSourceVersionNumber;
+FOUNDATION_EXPORT const unsigned char BlockDataSourceVersionString[];
 

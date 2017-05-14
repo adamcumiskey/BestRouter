@@ -10,17 +10,17 @@ import UIKit
 
 /// Generic Router base class
 public class Router: Equatable {
-    typealias Constructor = () -> UIViewController
+    typealias Constructor = (Router) -> UIViewController
     
     public var title: String
     fileprivate var identifier: String
-    weak var viewController: UIViewController?
+    public weak var viewController: UIViewController?
     private var constructViewControllerBlock: Constructor
     
     public init<ViewController: UIViewController>(
         title: String,
         identifier: String = UUID().uuidString,
-        constructor: @escaping () -> ViewController
+        constructor: @escaping (Router) -> ViewController
     ) {
         self.title = title
         self.identifier = identifier
@@ -28,7 +28,7 @@ public class Router: Equatable {
     }
     
     public func createViewController() -> UIViewController {
-        let vc = constructViewControllerBlock()
+        let vc = constructViewControllerBlock(self)
         self.viewController = vc
         return vc
     }
@@ -38,15 +38,9 @@ public func ==(left: Router, right: Router) -> Bool {
     return left.identifier == right.identifier
 }
 
-
-public protocol ParentRouter {
-    func attatch(router: Router, animated: Bool)
-    func detatch(router: Router, animated: Bool)
-}
-
 /// Router wrapping UINavigationController
-public class StackRouter: Router, ParentRouter {
-    public var routers: [Router]
+public class StackRouter: Router {
+    public var root: Router
     private var delegate: UINavigationControllerDelegate?
     
     public required init(
@@ -55,27 +49,14 @@ public class StackRouter: Router, ParentRouter {
         delegate: UINavigationControllerDelegate? = nil, 
         constructor: @escaping () -> UINavigationController = UINavigationController.init
     ) {
-        self.routers = [root]
+        self.root = root
         self.delegate = delegate
-        super.init(title: title, constructor: {
+        super.init(title: title, constructor: { _ in
             let navigationController = constructor()
             navigationController.viewControllers = [root.createViewController()]
             navigationController.delegate = delegate
             return navigationController
         })
-    }
-    
-    public func attatch(router: Router, animated: Bool = true) {
-        self.routers.append(router)
-        if let viewController = self.viewController as? UINavigationController {
-            viewController.pushViewController(router.createViewController(), animated: animated)
-        }
-    }
-    
-    public func detatch(router: Router, animated: Bool = true) {
-        if let viewController = self.viewController as? UINavigationController {
-            viewController.popViewController(animated: animated)
-        }
     }
 }
 
@@ -94,7 +75,7 @@ public class TabRouter: Router {
         self.routers = routers
         self.delegate = delegate
         
-        super.init(title: title) {
+        super.init(title: title) { _ in
             let tabBar = constructor()
             tabBar.viewControllers = routers.map { $0.createViewController() }
             tabBar.delegate = delegate
@@ -121,7 +102,7 @@ public class SplitRouter: Router {
         self.detail = detail
         self.delegate = delegate
         
-        super.init(title: title) {
+        super.init(title: title) { _ in
             let splitViewController = constructor()
             splitViewController.viewControllers = [
                 master.createViewController(),

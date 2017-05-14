@@ -1,16 +1,19 @@
 PODS:
-  - BestRouter (0.1.0)
+  - BestRouter (0.1.2)
+  - BlockDataSource (0.3.0)
 
 DEPENDENCIES:
   - BestRouter (from `../`)
+  - BlockDataSource
 
 EXTERNAL SOURCES:
   BestRouter:
     :path: "../"
 
 SPEC CHECKSUMS:
-  BestRouter: a298ab2eeba373645d04a43f5a0ae6b0c819c77f
+  BestRouter: b0d83a4e3bbfcf944fd2eea69f26e78eb35d9060
+  BlockDataSource: fde85dda834f902e7afd2aa70117b32f40d2c186
 
-PODFILE CHECKSUM: 07b6b6723505901ac07395e068f8d84db2bfe8f0
+PODFILE CHECKSUM: b8ae5b3964e6ffae52290c6130a078f47183be7b
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.2.0
