@@ -1,0 +1,6 @@
+framework module Pods_BestRouter_Example {
+  umbrella header "Pods-BestRouter_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}

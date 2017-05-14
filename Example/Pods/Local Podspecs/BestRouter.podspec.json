@@ -1,0 +1,22 @@
+{
+  "name": "BestRouter",
+  "version": "0.1.0",
+  "summary": "A short description of BestRouter.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/<GITHUB_USERNAME>/BestRouter",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "Adam Cumiskey": "adam.cumiskey@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/<GITHUB_USERNAME>/BestRouter.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "BestRouter/Classes/**/*"
+}

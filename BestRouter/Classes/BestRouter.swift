@@ -8,114 +8,139 @@
 
 import UIKit
 
-
-public protocol RouterType: class {
-    var viewController: UIViewController { get }
-}
-
-public protocol ParentRouterType: RouterType {
-    func attatch(router: RouterType, animated: Bool)
-    func detatch(router: RouterType, animated: Bool)
-}
-
-
 /// Generic Router base class
-public class Router<ViewController: UIViewController>: RouterType {
-    fileprivate var _viewController: ViewController
-    public var viewController: UIViewController { return _viewController }
+public class Router: Equatable {
+    typealias Constructor = () -> UIViewController
     
-    public init(viewController: ViewController) {
-        _viewController = viewController
+    public var title: String
+    fileprivate var identifier: String
+    weak var viewController: UIViewController?
+    private var constructViewControllerBlock: Constructor
+    
+    public init<ViewController: UIViewController>(
+        title: String,
+        identifier: String = UUID().uuidString,
+        constructor: @escaping () -> ViewController
+    ) {
+        self.title = title
+        self.identifier = identifier
+        self.constructViewControllerBlock = constructor
+    }
+    
+    public func createViewController() -> UIViewController {
+        let vc = constructViewControllerBlock()
+        self.viewController = vc
+        return vc
     }
 }
 
+public func ==(left: Router, right: Router) -> Bool {
+    return left.identifier == right.identifier
+}
+
+
+public protocol ParentRouter {
+    func attatch(router: Router, animated: Bool)
+    func detatch(router: Router, animated: Bool)
+}
 
 /// Router wrapping UINavigationController
-public class NavigationRouter<Root: RouterType>: Router<UINavigationController>, ParentRouterType {
-    public var root: Root
+public class StackRouter: Router, ParentRouter {
+    public var routers: [Router]
     private var delegate: UINavigationControllerDelegate?
     
-    public init(root: Root, delegate: UINavigationControllerDelegate? = nil) {
-        self.root = root
-        
-        let navigationController = UINavigationController(rootViewController: root.viewController)
-        navigationController.delegate = delegate
-        super.init(viewController: navigationController)
+    public required init(
+        title: String, 
+        root: Router, 
+        delegate: UINavigationControllerDelegate? = nil, 
+        constructor: @escaping () -> UINavigationController = UINavigationController.init
+    ) {
+        self.routers = [root]
+        self.delegate = delegate
+        super.init(title: title, constructor: {
+            let navigationController = constructor()
+            navigationController.viewControllers = [root.createViewController()]
+            navigationController.delegate = delegate
+            return navigationController
+        })
     }
     
-    public func attatch(router: RouterType, animated: Bool = true) {
-        self._viewController.pushViewController(router.viewController, animated: animated)
+    public func attatch(router: Router, animated: Bool = true) {
+        self.routers.append(router)
+        if let viewController = self.viewController as? UINavigationController {
+            viewController.pushViewController(router.createViewController(), animated: animated)
+        }
     }
     
-    public func detatch(router: RouterType, animated: Bool = true) {
-        self._viewController.popViewController(animated: animated)
+    public func detatch(router: Router, animated: Bool = true) {
+        if let viewController = self.viewController as? UINavigationController {
+            viewController.popViewController(animated: animated)
+        }
     }
 }
 
 
 /// Router wrapping UITabBarController
-public class TabBarRouter: Router<UITabBarController> {
-    public var items: [RouterType]
+public class TabRouter: Router {
+    public let routers: [Router]
     private var delegate: UITabBarControllerDelegate?
     
-    public init(items: [RouterType], delegate: UITabBarControllerDelegate? = nil) {
-        self.items = items
+    public init(
+        title: String, 
+        routers: [Router], 
+        delegate: UITabBarControllerDelegate? = nil, 
+        constructor: @escaping () -> UITabBarController = UITabBarController.init
+    ) {
+        self.routers = routers
         self.delegate = delegate
         
-        let tabBar = UITabBarController()
-        tabBar.viewControllers = self.items.map { $0.viewController }
-        tabBar.delegate = delegate
-        super.init(viewController: tabBar)
+        super.init(title: title) {
+            let tabBar = constructor()
+            tabBar.viewControllers = routers.map { $0.createViewController() }
+            tabBar.delegate = delegate
+            return tabBar
+        }
     }
 }
 
 
 /// Router wrapping UISplitViewController
-public class SplitViewRouter<Master: RouterType, Detail: RouterType>: Router<UISplitViewController> {
-    public var master: Master
-    public var detail: Detail
+public class SplitRouter: Router {
+    public let master: Router
+    public let detail: Router
     private var delegate: UISplitViewControllerDelegate?
     
-    public init(master: Master, detail: Detail, delegate: UISplitViewControllerDelegate? = nil) {
+    public init(
+        title: String,
+        master: Router,
+        detail: Router, 
+        delegate: UISplitViewControllerDelegate? = nil,
+        constructor: @escaping () -> UISplitViewController = UISplitViewController.init
+    ) {
         self.master = master
         self.detail = detail
         self.delegate = delegate
         
-        let splitViewController = UISplitViewController()
-        splitViewController.viewControllers = [master.viewController, detail.viewController]
-        splitViewController.delegate = delegate
-        
-        super.init(viewController: splitViewController)
-    }
-}
-
-
-/// Base of the Router heirarchy in a window
-/// You should create and retain this in your App Delegate when `applicationDidFinishLaunching` is called
-public final class WindowRouter: RouterType {
-    public var viewController: UIViewController { return root.viewController }
-    public var root: RouterType {
-        didSet {
-            window.setRootViewController(root.viewController)
+        super.init(title: title) {
+            let splitViewController = constructor()
+            splitViewController.viewControllers = [
+                master.createViewController(),
+                detail.createViewController()
+            ]
+            splitViewController.delegate = delegate
+            return splitViewController
         }
     }
-    
-    private var window: UIWindow
-    
-    public init(root: RouterType, window: UIWindow) {
-        root.viewController.view.frame = window.bounds
-        self.root = root
-        self.window = window
-    }
-    
-    public func launch() {
-        window.rootViewController = root.viewController
-        window.makeKeyAndVisible()
-    }
 }
 
+
 extension UIWindow {
-    func setRootViewController(_ viewController: UIViewController, animated: Bool = true, completion: ((Void) -> Void)? = nil) {
+    public func attach(router: Router) {
+        rootViewController = router.createViewController()
+        makeKeyAndVisible()
+    }
+    
+    private func setRootViewController(_ viewController: UIViewController, animated: Bool = true, completion: ((Void) -> Void)? = nil) {
         viewController.view.frame = frame
         if animated == true {
             UIView.transition(

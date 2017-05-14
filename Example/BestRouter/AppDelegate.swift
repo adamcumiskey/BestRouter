@@ -14,42 +14,54 @@ import BestRouter
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // anchor for the router hierarchy
-    var router: WindowRouter!
+    var router: Router!
+    var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+
+        self.router = SplitRouter(
+            title: "BestRouter", 
+            master: TabRouter(
+                title: "TabRouter",
+                routers: [
+                    StackRouter(
+                        title: "A",
+                        root: Router(title: "A") {
+                            let vc = UIViewController()
+                            vc.view.backgroundColor = .green
+                            vc.title = "A"
+                            vc.tabBarItem = UITabBarItem(title: "A", image: nil, tag: 0)
+                            return vc
+                        }
+                    ),
+                    StackRouter(
+                        title: "C",
+                        root: Router(title: "C") {
+                            let vc = UIViewController()
+                            vc.view.backgroundColor = .orange
+                            vc.title = "C"
+                            vc.tabBarItem = UITabBarItem(title: "C", image: nil, tag: 1)
+                            return vc
+                        }
+                    )
+                ]
+            ),
+            detail: StackRouter(
+                title: "Stack",
+                root: Router(title: "Detail") {
+                    let vc = UIViewController()
+                    vc.view.backgroundColor = .blue
+                    vc.title = "B"
+                    return vc
+                }
+            )
+        )
         
-        let blueVC = UIViewController()
-        blueVC.view.backgroundColor = .blue
-        blueVC.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 0)
+        self.window = UIWindow()
+        window!.frame = UIScreen.main.bounds
+        window!.attach(router: self.router)
         
-        let redVC = UIViewController()
-        redVC.view.backgroundColor = .red
-        redVC.tabBarItem = UITabBarItem(tabBarSystemItem: .bookmarks, tag: 1)
-        
-        let yellowVC = UIViewController()
-        yellowVC.view.backgroundColor = .yellow
-        
-        let vcRouter1 = Router(viewController: blueVC)
-        let vcRouter2 = Router(viewController: redVC)
-        let vcRouter3 = Router(viewController: yellowVC)
-        
-        let nav1 = NavigationRouter(root: vcRouter1)
-        let nav2 = NavigationRouter(root: vcRouter2)
-        let nav3 = NavigationRouter(root: vcRouter3)
-        
-        let tab = TabBarRouter(items: [nav1, nav2])
-        
-        let window = UIWindow(frame: UIScreen.main.bounds)
-        let router: WindowRouter
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            let split = SplitViewRouter(master: nav3, detail: tab)
-            router = WindowRouter(root: split, window: window)
-        } else {
-            router = WindowRouter(root: tab, window: window)
-        }
-        router.launch()
-        self.router = router
         return true
     }
 
