@@ -2,11 +2,8 @@ use_frameworks!
 
 target 'BestRouter_Example' do
   pod 'BestRouter', :path => '../'
-  pod 'BlockDataSource'
   
   target 'BestRouter_Tests' do
     inherit! :search_paths
-
-    
   end
 end

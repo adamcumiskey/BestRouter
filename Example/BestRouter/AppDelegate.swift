@@ -28,17 +28,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
           StackRouter(
             title: "A",
             root: Router(title: "A" ) { router in
-              return UIViewController()
+                let vc = UIViewController()
+                vc.view.backgroundColor = .green
+                vc.title = "A"
+                vc.tabBarItem = UITabBarItem(tabBarSystemItem: .bookmarks, tag: 0)
+                return vc
             }
           ),
           StackRouter(
             title: "C",
             root: Router(title: "C") { _ in
-              let vc = UIViewController()
-              vc.view.backgroundColor = .orange
-              vc.title = "C"
-              vc.tabBarItem = UITabBarItem(title: "C", image: nil, tag: 1)
-              return vc
+                let vc = UIViewController()
+                vc.view.backgroundColor = .orange
+                vc.title = "C"
+                vc.tabBarItem = UITabBarItem(tabBarSystemItem: .downloads, tag: 1)
+                return vc
             }
           )
         ]
