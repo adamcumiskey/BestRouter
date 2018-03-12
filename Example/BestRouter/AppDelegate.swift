@@ -7,7 +7,6 @@
 //
 
 import BestRouter
-import BlockDataSource
 import UIKit
 
 
@@ -29,33 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
           StackRouter(
             title: "A",
             root: Router(title: "A" ) { router in
-              return MenuViewController(
-                dataSource: DataSource(
-                  items: [
-                    Item(
-                      onSelect: { _ in
-                        if let navigationController = router.viewController?.navigationController {
-                          navigationController.pushViewController(
-                            MenuViewController(
-                              dataSource: DataSource(
-                                items: [
-                                  Item { (cell: UITableViewCell) in
-                                    cell.textLabel?.text = "Neat"
-                                  }
-                                ]
-                              )
-                            ),
-                            animated: true
-                          )
-                        }
-                      },
-                      configure: { (cell: UITableViewCell) in
-                        cell.textLabel?.text = "Click me"
-                      }
-                    )
-                  ]
-                )
-              )
+              return UIViewController()
             }
           ),
           StackRouter(

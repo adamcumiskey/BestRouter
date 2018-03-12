@@ -121,7 +121,7 @@ extension UIWindow {
         makeKeyAndVisible()
     }
     
-    private func setRootViewController(_ viewController: UIViewController, animated: Bool = true, completion: ((Void) -> Void)? = nil) {
+    private func setRootViewController(_ viewController: UIViewController, animated: Bool = true, completion: (() -> Void)? = nil) {
         viewController.view.frame = frame
         if animated == true {
             UIView.transition(
